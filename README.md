@@ -2,4 +2,4 @@
 
 Correlation matrix and heatmap analyzing pricing, engine capacity, power, torque, and dimensions across Indian car models.
 
-![Correlation Heatmap](output/correlation_heatmap.png)
+![Correlation Heatmap](correlation_heatmap.png)

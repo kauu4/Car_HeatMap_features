@@ -3,11 +3,12 @@ import numpy as np
 import pandas as pd
 import seaborn as sns
 
-# 1. Load dataset
-df = pd.read_csv("data/indian_cars.csv")
+# 1. Load dataset directly from GitHub
+url = "https://raw.githubusercontent.com/chandanverma07/DataSets/master/car%20details%20v4.csv"
+df = pd.read_csv(url)
 
 
-# 2. Extract numeric values from text columns (e.g., "1197 cc" -> 1197.0)
+# 2. Extract numeric values from text columns
 def extract_number(series):
   return (
       series.astype(str)
@@ -31,13 +32,11 @@ clean_df = pd.DataFrame({
     "Fuel_Tank_L": pd.to_numeric(df["Fuel Tank Capacity"], errors="coerce"),
 }).dropna()
 
-# 3. Compute Pearson correlation matrix
+# 3. Compute Pearson correlation matrix & save heatmap in root folder
 corr_matrix = clean_df.corr(method="pearson")
 
-# 4. Plot and save the Heatmap
 plt.figure(figsize=(11, 9))
 mask = np.triu(np.ones_like(corr_matrix, dtype=bool))
-
 sns.heatmap(
     corr_matrix,
     mask=mask,
@@ -51,15 +50,11 @@ sns.heatmap(
 )
 plt.title("Correlation Matrix: Indian Car Specifications & Pricing")
 plt.tight_layout()
-plt.savefig("output/correlation_heatmap.png", dpi=300)
-print("Saved heatmap to output/correlation_heatmap.png\n")
+plt.savefig("correlation_heatmap.png", dpi=300)
 
-# 5. Print strongest positive and negative correlations
+# 4. Print strongest positive and negative correlations
 pairs = corr_matrix.where(np.tril(np.ones(corr_matrix.shape), k=-1).astype(bool))
 sorted_pairs = pairs.unstack().dropna().sort_values(ascending=False)
 
-print("=== TOP 5 STRONGEST POSITIVE CORRELATIONS ===")
-print(sorted_pairs.head(5))
-
-print("\n=== TOP 5 STRONGEST NEGATIVE CORRELATIONS ===")
-print(sorted_pairs.tail(5))
+print("=== TOP 5 POSITIVE ===\n", sorted_pairs.head(5))
+print("\n=== TOP 5 NEGATIVE ===\n", sorted_pairs.tail(5))
